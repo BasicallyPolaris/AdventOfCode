@@ -2,7 +2,8 @@ use std::env;
 use std::fs;
 
 fn main() {
-    let is_test_mode = env::args().any(|arg| arg == "--testing");
+    let args: Vec<String> = env::args().collect();
+    let is_test_mode = args.iter().any(|arg| arg == "--test");
 
     let filename = if is_test_mode {
         "day1_test.input"
@@ -11,7 +12,7 @@ fn main() {
     };
 
     println!("Reading from: {}", filename);
-
+    println!("---");
     let contents =
         fs::read_to_string(filename).expect(&format!("Failed to read file: {}", filename));
     let commands: Vec<&str> = contents.lines().collect();
@@ -65,33 +66,39 @@ fn task_two(commands: &Vec<&str>) {
         match number_str.parse::<i32>() {
             Ok(rotation) => {
                 let prev_position = position;
+                let modulo_rotation = rotation % 100;
 
                 match direction {
                     "L" => {
-                        let lower_zero_dist = position;
+                        let immediate_position = position - modulo_rotation;
+
+                        if immediate_position <= COUNT_GOAL.into() {
+                            password += 1;
+                        }
+
+                        password += rotation / 100;
 
                         position = rotate_left(position, rotation);
-
-                        if position == 0 && prev_position != 0 {
-                            password += 1;
-                        }
-
-                        password += std::cmp::max((rotation - lower_zero_dist) / 100, 0);
                     }
                     "R" => {
-                        let upper_zero_dist = 100 - position;
+                        let immediate_position = position + modulo_rotation;
 
-                        position = rotate_right(position, rotation);
-                        if position == 0 && prev_position != 0 {
+                        if immediate_position >= DIAL_MODULO.into() {
                             password += 1;
                         }
 
-                        password += std::cmp::max((rotation - upper_zero_dist) / 100, 0);
+                        password += rotation / 100;
+
+                        position = rotate_right(position, rotation);
                     }
                     _ => {
                         eprintln!("Unexpected direction.");
                     }
                 }
+                println!(
+                    "Position: {} - Command: {} - Password: {}",
+                    position, command, password
+                );
             }
             Err(e) => {
                 eprintln!("Failed to parse number '{}': {}", number_str, e);
@@ -117,7 +124,7 @@ fn rotate_right(position: i32, rotation: i32) -> i32 {
     let mod_rotation = rotation % 100;
     let rotated_value = position + mod_rotation;
 
-    if rotated_value > 100 {
+    if rotated_value >= 100 {
         rotated_value % 100
     } else {
         rotated_value
