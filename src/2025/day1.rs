@@ -1,28 +1,29 @@
 use std::env;
 use std::fs;
 
-fn main() {
+pub fn run() {
     let args: Vec<String> = env::args().collect();
     let is_test_mode = args.iter().any(|arg| arg == "--test");
+    const INPUT_BASE: &str = "src/2025/input/";
 
     let filename = if is_test_mode {
-        "day1_test.input"
+        format!("{}{}", INPUT_BASE, "day1_test.input")
     } else {
-        "day1.input"
+        format!("{}{}", INPUT_BASE, "day1.input")
     };
 
-    println!("Reading from: {}", filename);
-    println!("---");
+    println!("📆 Day 1 {}:", if is_test_mode { "(DEBUG)" } else { "" });
+    println!("------------");
     let contents =
-        fs::read_to_string(filename).expect(&format!("Failed to read file: {}", filename));
+        fs::read_to_string(&filename).expect(&format!("Failed to read file: {}", filename));
     let commands: Vec<&str> = contents.lines().collect();
 
     task_one(&commands);
     task_two(&commands);
+    println!("");
 }
 
 fn task_one(commands: &Vec<&str>) {
-    // We start at position 50 & need to count how often we reach 0 after moves.
     const COUNT_GOAL: u8 = 0;
     let mut position: i32 = 50;
     let mut password = 0;
@@ -56,50 +57,32 @@ fn task_one(commands: &Vec<&str>) {
 }
 
 fn task_two(commands: &Vec<&str>) {
-    const COUNT_GOAL: u8 = 0;
-    const DIAL_MODULO: u8 = 100;
     let mut position: i32 = 50;
     let mut password = 0;
 
     for command in commands {
         let (direction, number_str) = command.split_at(1);
         match number_str.parse::<i32>() {
-            Ok(rotation) => {
-                let prev_position = position;
-                let modulo_rotation = rotation % 100;
+            Ok(rotation) => match direction {
+                "L" => {
+                    let absolute_position =
+                        if position > 0 { 100 - position } else { 0 } + rotation;
 
-                match direction {
-                    "L" => {
-                        let immediate_position = position - modulo_rotation;
+                    password += absolute_position.abs() / 100;
 
-                        if immediate_position <= COUNT_GOAL.into() {
-                            password += 1;
-                        }
-
-                        password += rotation / 100;
-
-                        position = rotate_left(position, rotation);
-                    }
-                    "R" => {
-                        let immediate_position = position + modulo_rotation;
-
-                        if immediate_position >= DIAL_MODULO.into() {
-                            password += 1;
-                        }
-
-                        password += rotation / 100;
-
-                        position = rotate_right(position, rotation);
-                    }
-                    _ => {
-                        eprintln!("Unexpected direction.");
-                    }
+                    position = rotate_left(position, rotation);
                 }
-                println!(
-                    "Position: {} - Command: {} - Password: {}",
-                    position, command, password
-                );
-            }
+                "R" => {
+                    let absolute_position = position + rotation;
+
+                    password += absolute_position.abs() / 100;
+
+                    position = rotate_right(position, rotation);
+                }
+                _ => {
+                    eprintln!("Unexpected direction.");
+                }
+            },
             Err(e) => {
                 eprintln!("Failed to parse number '{}': {}", number_str, e);
             }

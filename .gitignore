@@ -2,3 +2,8 @@
 *.input
 *.pdb
 *.exe
+
+
+# Added by cargo
+
+/target
