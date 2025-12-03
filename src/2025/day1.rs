@@ -20,7 +20,7 @@ pub fn run() {
 
     task_one(&commands);
     task_two(&commands);
-    println!("");
+    println!();
 }
 
 fn task_one(commands: &Vec<&str>) {

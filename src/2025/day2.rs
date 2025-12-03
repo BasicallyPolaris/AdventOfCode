@@ -20,7 +20,7 @@ pub fn run() {
 
     task_one(&ranges);
     task_two(&ranges);
-    println!("");
+    println!();
 }
 
 fn task_one(ranges: &Vec<&str>) {

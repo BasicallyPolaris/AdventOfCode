@@ -20,7 +20,7 @@ pub fn run() {
 
     task_one(&battery_banks);
     task_two(&battery_banks);
-    println!("");
+    println!();
 }
 
 fn task_one(battery_banks: &Vec<&str>) {
