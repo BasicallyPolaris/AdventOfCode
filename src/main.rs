@@ -12,6 +12,7 @@ fn run_all_2024() {
     println!("Running advent of code for 2024 🎄🎁");
     println!();
     y2024::day1::run();
+    y2024::day2::run();
 }
 
 fn run_all_2025() {
