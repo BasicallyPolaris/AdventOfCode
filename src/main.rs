@@ -4,8 +4,8 @@ mod y2024;
 mod y2025;
 
 fn main() {
-    run_all_2024();
-    // run_all_2025();
+    // run_all_2024();
+    run_all_2025();
 }
 
 fn run_all_2024() {
@@ -18,7 +18,8 @@ fn run_all_2024() {
 fn run_all_2025() {
     println!("Running advent of code for 2025 🎄🎁");
     println!();
-    y2025::day1::run();
-    y2025::day2::run();
-    y2025::day3::run();
+    // y2025::day1::run();
+    // y2025::day2::run();
+    // y2025::day3::run();
+    y2025::day4::run();
 }
