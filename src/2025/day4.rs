@@ -1,6 +1,5 @@
 use std::env;
 use std::fs;
-use std::num::NonZeroUsize;
 
 const PAPER_ROLL_CHAR: char = '@';
 const REMOVED_ROL_CHAR: char = 'x';
@@ -130,7 +129,9 @@ fn check_specific_indices_for_removal(
 
         // Add neighboring indices to a working set as they need to be rechecked
         check_neighboring_fields(x, y, x_dim, y_dim, |x, y| {
-            working_set.push((x, y));
+            if diagram_lines[y][x] == PAPER_ROLL_CHAR {
+                working_set.push((x, y));
+            }
         });
     }
 }
@@ -155,7 +156,7 @@ fn mark_and_count_removable_rolls(
     }
 }
 
-fn task_two(diagram_lines: &Vec<Vec<char>>) {
+pub fn task_two(diagram_lines: &Vec<Vec<char>>) {
     let mut diagram_lines_copy = diagram_lines.clone();
     let mut reachable_roll_count: u32 = 0;
 
@@ -175,9 +176,28 @@ fn task_two(diagram_lines: &Vec<Vec<char>>) {
             indices,
         );
     }
+}
 
-    println!(
-        "Task 2 - The reachable paper roll count is: {}",
-        reachable_roll_count
-    );
+pub fn task_two_alt(diagram_lines: &Vec<Vec<char>>) {
+    let mut diagram_lines_copy = diagram_lines.clone();
+    let mut reachable_roll_count: u32 = 0;
+
+    let mut working_set: Vec<(usize, usize)> = Vec::new();
+
+    for y in 0..diagram_lines.len() {
+        for x in 0..diagram_lines[0].len() {
+            if diagram_lines[y][x] == PAPER_ROLL_CHAR {
+                working_set.push((x, y));
+            }
+        }
+    }
+
+    while let Some(indices) = working_set.pop() {
+        check_specific_indices_for_removal(
+            &mut diagram_lines_copy,
+            &mut working_set,
+            &mut reachable_roll_count,
+            indices,
+        );
+    }
 }

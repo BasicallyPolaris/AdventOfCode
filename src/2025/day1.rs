@@ -48,7 +48,7 @@ fn task_one(commands: &Vec<&str>) {
                 eprintln!("Failed to parse number '{}': {}", number_str, e);
             }
         }
-        if position == COUNT_GOAL.into() {
+        if position == COUNT_GOAL as i32 {
             password += 1;
         }
     }
