@@ -14,8 +14,8 @@ pub fn run() {
 
     println!("📆 Day 1 {}:", if is_test_mode { "(DEBUG)" } else { "" });
     println!("------------");
-    let contents =
-        fs::read_to_string(&filename).expect(&format!("Failed to read file: {}", filename));
+    let contents = fs::read_to_string(&filename)
+        .unwrap_or_else(|_| panic!("Failed to read file: {}", filename));
     let commands: Vec<&str> = contents.lines().collect();
 
     task_one(&commands);

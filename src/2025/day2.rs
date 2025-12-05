@@ -14,8 +14,8 @@ pub fn run() {
 
     println!("📆 Day 2 {}:", if is_test_mode { "(DEBUG)" } else { "" });
     println!("------------");
-    let contents =
-        fs::read_to_string(&filename).expect(&format!("Failed to read file: {}", filename));
+    let contents = fs::read_to_string(&filename)
+        .unwrap_or_else(|_| panic!("Failed to read file: {}", filename));
     let ranges: Vec<&str> = contents.split(|char| char == ',').collect();
 
     task_one(&ranges);

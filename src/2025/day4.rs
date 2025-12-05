@@ -17,8 +17,8 @@ pub fn run() {
 
     println!("📆 Day 4 {}:", if is_test_mode { "(DEBUG)" } else { "" });
     println!("------------");
-    let contents =
-        fs::read_to_string(&filename).expect(&format!("Failed to read file: {}", filename));
+    let contents = fs::read_to_string(&filename)
+        .unwrap_or_else(|_| panic!("Failed to read file: {}", filename));
     let diagram_lines: Vec<Vec<char>> = contents
         .lines()
         .map(|line| line.chars().collect())
@@ -176,8 +176,14 @@ pub fn task_two(diagram_lines: &Vec<Vec<char>>) {
             indices,
         );
     }
+
+    println!(
+        "Task 2 - The reachable paper roll count is: {}",
+        reachable_roll_count
+    );
 }
 
+#[allow(dead_code)]
 pub fn task_two_alt(diagram_lines: &Vec<Vec<char>>) {
     let mut diagram_lines_copy = diagram_lines.clone();
     let mut reachable_roll_count: u32 = 0;
