@@ -73,7 +73,7 @@ fn task_two(lines: &[&str]) {
 
     let mut safe_reports_count = 0;
 
-    for mut list in numbers_lists {
+    for list in numbers_lists {
         if list.len() <= 1 {
             safe_reports_count += 1;
         } else {
@@ -86,13 +86,8 @@ fn task_two(lines: &[&str]) {
                         || list[i].abs_diff(list[i + 1]) > 3
                         || !list[i].abs_diff(list[i + 1]) == 0
                     {
-                        if is_safe {
-                            is_safe = false;
-                            list.remove(i + 1);
-                            continue;
-                        } else {
-                            break;
-                        }
+                        is_safe = check_for_safe_list_ignoring_index(ascending, &list, i)
+                            || check_for_safe_list_ignoring_index(ascending, &list, i + 1);
                     }
                 }
             }
@@ -104,6 +99,24 @@ fn task_two(lines: &[&str]) {
     }
 
     println!("Task 2 - Safe reports count: {}", safe_reports_count);
+}
+
+fn check_for_safe_list_ignoring_index(ascending: bool, list: &[u32], index: usize) -> bool {
+    for i in 0..list.len() - 1 {
+        if i + 1 < list.len() {
+            if i == index {
+                continue;
+            }
+            if !compare_ascending_decending(list[i], list[i + 1], ascending)
+                || list[i].abs_diff(list[i + 1]) > 3
+                || !list[i].abs_diff(list[i + 1]) == 0
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
 
 fn compare_ascending_decending(num1: u32, num2: u32, is_ascending: bool) -> bool {
