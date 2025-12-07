@@ -1,6 +1,5 @@
 use std::env;
 use std::fs;
-use std::num;
 
 const ADD_STRING: &str = "+";
 const MUL_STRING: &str = "*";
@@ -36,7 +35,7 @@ pub fn run() {
     let operations: Vec<&str> = operations_array[0].split_ascii_whitespace().collect();
 
     task_one(&numbers_array, &operations);
-    task_two(numbers_strings_array, &operations);
+    task_two(lines);
 
     println!();
 }
@@ -67,52 +66,63 @@ fn task_one(numbers: &[Vec<u64>], operations: &[&str]) {
     println!("Task 1 - The result of the homework is: {}", result);
 }
 
-fn task_two(numbers: &[&str], operations: &[&str]) {
-    let numbers_array: Vec<u64> = {
-        let mut result_vec = vec![];
-
-        if !numbers.is_empty() {
-            for i in 0..numbers[0].len() {
-                let mut current = String::new();
-
-                for j in 0..numbers.len() {
-                    if let Some(c) = numbers[j].chars().nth(i) {
-                        current.push(c);
-                    }
-                }
-
-                result_vec.push(
-                    current
-                        .trim()
-                        .parse::<u64>()
-                        .expect("Couldn't parse number"),
-                );
-            }
-        }
-        result_vec
-    };
-
-    let mut result = 0;
-
-    for i in 1..operations.len() {
-        match operations[i] {
-            ADD_STRING => {
-                result += numbers_array.iter().fold(0, |acc, nums| {
-                    acc + nums
-                        .get(i)
-                        .expect("Something went wrong while adding up array entries")
-                })
-            }
-            MUL_STRING => {
-                result += numbers_array.iter().fold(1, |acc, nums| {
-                    acc * nums
-                        .get(i)
-                        .expect("Something went wrong while adding up array entries")
-                })
-            }
-            _ => panic!("Unexpected operation: {}", operation),
-        }
+fn task_two(lines: Vec<&str>) {
+    if lines.is_empty() {
+        return;
     }
 
-    println!("Task 1 - The result of the homework is: {}", result);
+    let first_row = lines[0];
+
+    let result = {
+        let mut result: u64 = 0;
+        let mut current_numbers: Vec<u64> = vec![];
+        let mut current = String::new();
+
+        for i in (0..first_row.len()).rev() {
+            for j in 0..lines.len() {
+                let current_char = lines
+                    .get(j)
+                    .expect("Couldnt get line number")
+                    .chars()
+                    .nth(i)
+                    .unwrap_or(' ');
+
+                match current_char {
+                    ' ' => {
+                        if j == lines.len() - 1 && !current.is_empty() {
+                            current_numbers.push(current.parse::<u64>().unwrap_or_else(|_| {
+                                panic!("Couldn't parse current numbers string: {}", current)
+                            }));
+                            current.clear();
+                            continue;
+                        }
+                    }
+                    '+' => {
+                        current_numbers.push(current.parse::<u64>().unwrap_or_else(|_| {
+                            panic!("Couldn't parse current numbers string: {}", current)
+                        }));
+                        result += current_numbers.iter().sum::<u64>();
+                        current_numbers.clear();
+                        current.clear();
+                    }
+                    '*' => {
+                        current_numbers.push(current.parse::<u64>().unwrap_or_else(|_| {
+                            panic!("Couldn't parse current numbers string: {}", current)
+                        }));
+                        result += current_numbers.iter().fold(1, |acc, x| acc * x);
+                        current_numbers.clear();
+                        current.clear();
+                    }
+                    _ => {
+                        // Should be a number
+                        current.push(current_char);
+                    }
+                }
+            }
+        }
+
+        result
+    };
+
+    println!("Task 2 - The result of the homework is: {}", result);
 }
