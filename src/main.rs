@@ -52,8 +52,9 @@ fn run_all_2025() {
     y2025::day5::run();
     y2025::day6::run();
     y2025::day7::run();
+    y2025::day8::run();
 }
 
 fn run_today() {
-    y2025::day7::run();
+    y2025::day8::run();
 }
