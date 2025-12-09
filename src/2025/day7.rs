@@ -2,7 +2,6 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 use std::env;
 use std::fs;
-use std::time;
 
 const TACHYON_START: char = 'S';
 const TACHYON_SPLITTER: char = '^';
