@@ -88,8 +88,6 @@ pub fn run() {
     println!();
 }
 
-type IterResult = (Vec<bool>, u32);
-
 fn task_one(machines: &[Machine]) {
     let mut presses_needed = 0;
 

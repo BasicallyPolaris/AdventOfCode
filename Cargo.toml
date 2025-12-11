@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 regex = "1.12.2"
+petgraph = "0.8"
 z3 = "0.19"
 z3-sys = { version = "0.10", features = ["gh-release"] }
 
